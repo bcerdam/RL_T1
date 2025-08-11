@@ -8,5 +8,5 @@ class BaseAgent(ABC):
         pass
 
     @abstractmethod
-    def learn(self, action: int, reward: float):
+    def learn(self, action: int, reward: float, alpha: float) -> None:
         pass
