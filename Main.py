@@ -17,19 +17,20 @@ def show_results(bandit_results: type(BanditResults)) -> tuple:
 '''
 alpha = -1.0 -> Step size no constante, osea = 1/N
 '''
-def bandit_simulation(epsilon: float, num_of_arms: int, num_of_steps: int, num_of_runs: int, alpha: float, initial_action_value_estimate: int) -> tuple:
+def bandit_simulation(epsilon: float, num_of_arms: int, num_of_steps: int, num_of_runs: int, alpha: float, initial_action_value_estimate: int, sga: bool, ejercicio_f: bool, baseline: bool) -> tuple:
 
     results = BanditResults()
     for run_id in range(num_of_runs):
 
-        bandit = SimpleBanditEnv(seed=run_id, num_of_arms=num_of_arms)
+        bandit = SimpleBanditEnv(seed=run_id, num_of_arms=num_of_arms, ejercicio_f=ejercicio_f)
         agent = SimpleBanditAgent(num_of_arms, initial_action_value_estimate)
         best_action = bandit.best_action
 
         for _ in range(num_of_steps):
-            action = agent.get_action(epsilon)
+            action = agent.get_action(epsilon, sga)
             reward = bandit.step(action)
-            agent.learn(action, reward, alpha)
+
+            agent.learn(action, reward, alpha, sga, baseline)
 
             is_best_action = (action == best_action)
             results.add_result(reward, is_best_action)
@@ -79,7 +80,7 @@ def plot_optimal_action_comparison(all_results, parameter_name='epsilon'):
     ax.legend()
     ax.grid(True, linestyle='--', alpha=0.6)
     plt.tight_layout()
-    # plt.savefig('resultados/pregunta_c.jpeg', dpi=500)
+    # plt.savefig('resultados/pregunta_g.jpeg', dpi=500)
     plt.show()
 
 if __name__ == "__main__":
@@ -94,7 +95,7 @@ if __name__ == "__main__":
     #
     # results = []
     # for epsilon in EPSILON_VALUES:
-    #     avg_rewards, optimal_actions = bandit_simulation(epsilon, NUM_OF_ARMS, NUM_OF_STEPS, NUM_OF_RUNS, alpha=-1.0, initial_action_value_estimate=0)
+    #     avg_rewards, optimal_actions = bandit_simulation(epsilon, NUM_OF_ARMS, NUM_OF_STEPS, NUM_OF_RUNS, alpha=-1.0, initial_action_value_estimate=0, sga=False, ejercicio_f=False, baseline=False)
     #     results.append({'parameter': epsilon, 'actions': optimal_actions, 'rewards': avg_rewards})
     #
     # plot_full_comparison(results, parameter_name='epsilon')
@@ -109,9 +110,22 @@ if __name__ == "__main__":
     # results = []
     #
     # for param in params:
-    #     avg_rewards, optimal_actions = bandit_simulation(param[0], NUM_OF_ARMS, NUM_OF_STEPS, NUM_OF_RUNS, ALPHA, param[1])
+    #     avg_rewards, optimal_actions = bandit_simulation(param[0], NUM_OF_ARMS, NUM_OF_STEPS, NUM_OF_RUNS, ALPHA, param[1], sga=False, ejercicio_f=False, baseline=False)
     #     results.append({'parameter': f'epsilon={param[0]}, Q_1={param[1]}', 'actions': optimal_actions})
     #
     # plot_optimal_action_comparison(results, parameter_name='')
-    
+
     ''' Pregunta c '''
+
+    ''' Pregunta f '''
+
+    # params = [[0.1, True], [0.4, True], [0.1, False], [0.4, False]]
+    # results = []
+    #
+    # for param in params:
+    #     avg_rewards, optimal_actions = bandit_simulation(0, NUM_OF_ARMS, NUM_OF_STEPS, NUM_OF_RUNS, alpha=param[0], initial_action_value_estimate=0,
+    #                                                      sga=True, ejercicio_f=True, baseline=param[1])
+    #     results.append({'parameter': f'alpha={param[0]}, baseline={param[1]}', 'actions': optimal_actions})
+    # plot_optimal_action_comparison(results, parameter_name='')
+
+    ''' Pregunta f '''

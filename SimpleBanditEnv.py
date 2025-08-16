@@ -3,9 +3,15 @@ import random
 
 class SimpleBanditEnv:
 
-    def __init__(self, seed: int, num_of_arms: int = 10):
+    def __init__(self, seed: int, num_of_arms: int, ejercicio_f: bool):
         self.__num_of_arms = num_of_arms
-        self.true_action_values = np.random.randn(self.__num_of_arms)
+
+        if ejercicio_f == True:
+            self.true_action_values = np.random.randn(self.__num_of_arms) + 4
+            # self.true_action_values = np.zeros(self.__num_of_arms) Para pregunta g)
+        else:
+            self.true_action_values = np.random.randn(self.__num_of_arms)
+
         self.true_best_action = int(np.argmax(self.true_action_values))
 
     def step(self, action: int) -> float:
